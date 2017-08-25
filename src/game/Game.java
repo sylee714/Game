@@ -9,16 +9,33 @@ package game;
  *
  */
 public class Game {
-    private final String HUMAN = "O";
-    private final String COMPUTER = "X";
-    private final String BLANK = "-";
+    private final char HUMAN = 'O';
+    private final char COMPUTER = 'X';
+    private final char BLANK = '-';
+    private long timeLimit;
+    private boolean humanFirst;
     private final int SIZE = 8;
-    private String[][] board;
-    private final String[] ROWS = {"A", "B", "C", "D", "E", "F", "G", "H"};
+    private char[][] board;
+    private final char[] ROWS = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
     
-    public Game() {
-        board = new String[SIZE][SIZE];
+    public Game(long timeLimit, boolean humanFirst) {
+        this.timeLimit = timeLimit;
+        this.humanFirst = humanFirst;
+        board = new char[SIZE][SIZE];
         initializeBoard();
+    }
+    
+    public void getMove(String row, String column) {
+        String upperCaseRow = row.toUpperCase();
+        int rowIndex = 0;
+        int columnIndex = Integer.parseInt(column);
+        for (int i = 0; i < SIZE; ++i) {
+            if (upperCaseRow.equals(ROWS[i])) {
+                rowIndex = i;
+                break;
+            }
+        }
+        board[rowIndex][columnIndex] = HUMAN;
     }
     
     private void initializeBoard() {
@@ -29,6 +46,11 @@ public class Game {
         }
     }
     
+    
+    public int evaluate() {
+        int value = 0;
+        return value;
+    }
     
     public void print() {
         System.out.println("  1 2 3 4 5 6 7 8");
