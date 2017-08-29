@@ -14,6 +14,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
         char[][] state = new char[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
@@ -51,7 +52,8 @@ public class Main {
         }
         System.out.println();
         Board board = new Board(state, 'O');
-        board.evaluate();
+        System.out.println(board.gethValue());
+    
     }
     
 }

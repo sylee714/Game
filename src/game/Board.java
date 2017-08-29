@@ -5,10 +5,11 @@ package game;
  *  calculates the heuristic value of its state.
  */
 public class Board {
-    private final int MAX = 10000;
-    private final int HIGH = 3000;
-    private final int MEDIUM = 2000;
-    private final int LOW = 500;
+    private final int MAX = 1000000;
+    private final int HIGH = 10000;
+    private final int HIGH_MEDIUM = 1050;
+    private final int MEDIUM = 1000;
+    private final int LOW = 100;
     private final int ONE = 1;
     private final int SIZE = 8; // Size of the board
     private final char HUMAN = 'O';
@@ -29,12 +30,12 @@ public class Board {
         } else {
             secondPlayer = HUMAN;
         }
-        //evaluate();
+        evaluate();
     }
     
-    public void evaluate() {
-        //calculateFirstPlayerMoves(HUMAN);
-        //System.out.println("Value: " + hValue);
+    private void evaluate() {
+        calculatePlayerMoves(HUMAN);
+        System.out.println("Value: " + hValue);
         calculatePlayerMoves(COMPUTER);
         System.out.println("Value: " + hValue);
     }
@@ -45,52 +46,97 @@ public class Board {
      *              the symbol of the player
      */
     private void calculatePlayerMoves(char player) {
+     
+        // Checking rows
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
                 if (state[i][j] == player) {
-                    // Checking rows
-                    //checkAll(true, player, i, j);
                     if (checkFour(true, player, i, j)) {
-                        i = i + 3;
+                        //System.out.println("Checking rows");
+                        //System.out.println("Four");
+                        //System.out.println("Row: " + i + " Col: " + j);
+                        //System.out.println("---------------------------");
+                        j = j + 3;
                     } else if (checkDisjointThree(true, player, i, j)) {
-                        i = i + 3;
+                        //System.out.println("Checking rows");
+                        //System.out.println("D Three");
+                        //System.out.println("Row: " + i + " Col: " + j);
+                        //System.out.println("---------------------------");
+                        j = j + 3;
                     } else if (checkThree(true, player, i, j)) {
-                        i = i + 2;
+                        //System.out.println("Checking rows");
+                        //System.out.println("Three");
+                        //System.out.println("Row: " + i + " Col: " + j);
+                        //System.out.println("---------------------------");
+                        j = j + 2;
                     } else if (checkDisjointTwo(true, player, i, j)) {
-                        i = i + 2;
+                        //System.out.println("Checking rows");
+                        //System.out.println("D Two");
+                        //System.out.println("Row: " + i + " Col: " + j);
+                        //System.out.println("---------------------------");
+                        j = j + 2;
                     } else if (checkTwo(true, player, i, j)) {
-                        i = i + 1;
+                        //System.out.println("Checking rows");
+                        //System.out.println("Two");
+                        //System.out.println("Row: " + i + " Col: " + j);
+                        //System.out.println("---------------------------");
+                        j = j + 1;
                     } else if (checkOne(true, player, i, j)) {
-                        
+                        //System.out.println("Checking rows");
+                        //System.out.println("One");    
+                        //System.out.println("Row: " + i + " Col: " + j);
+                        //System.out.println("---------------------------");
                     }
-                    // Checking columns
-                    //checkAll(false, player, i, j);
-                    if (checkFour(false, player, i, j)) {
-                        i = i + 3;
-                    } else if (checkDisjointThree(false, player, i, j)) {
-                        i = i + 3;
-                    } else if (checkThree(false, player, i, j)) {
-                        i = i + 2;
-                    } else if (checkDisjointTwo(false, player, i, j)) {
-                        i = i + 2;
-                    } else if (checkTwo(false, player, i, j)) {
-                        i = i + 1;
-                    } else if (checkOne(false, player, i, j)) {
-                        
+                }
+            }
+        }
+        
+        // Checking cols
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (state[j][i] == player) {
+                    if (checkFour(false, player, j, i)) {
+                        //System.out.println("Checking cols");
+                        //System.out.println("Four");
+                        //System.out.println("Row: " + j + " Col: " + i);
+                        //System.out.println("---------------------------");
+                        j = j + 3;
+                    } else if (checkDisjointThree(false, player, j, i)) {
+                        //System.out.println("Checking cols");
+                        //System.out.println("D Three");
+                        //System.out.println("Row: " + j + " Col: " + i);
+                        //System.out.println("---------------------------");
+                        j = j + 3;
+                    } else if (checkThree(false, player, j, i)) {
+                        //System.out.println("Checking cols");
+                        //System.out.println("Three");
+                        //System.out.println("Row: " + j + " Col: " + i);
+                        //System.out.println("---------------------------");
+                        j = j + 2;
+                    } else if (checkDisjointTwo(false, player, j, i)) {
+                        //System.out.println("Checking cols");
+                        //System.out.println("D Two");
+                        //System.out.println("Row: " + j + " Col: " + i);
+                        //System.out.println("---------------------------");
+                        j = j + 2;
+                    } else if (checkTwo(false, player, j, i)) {
+                        //System.out.println("Checking cols");
+                        //System.out.println("Two");
+                        //System.out.println("Row: " + j + " Col: " + i);
+                        //System.out.println("---------------------------");
+                        j = j + 1;
+                    } else if (checkOne(false, player, j, i)) {
+                        //System.out.println("Checking cols");
+                        //System.out.println("One");    
+                        //System.out.println("Row: " + j + " Col: " + i);
+                        //System.out.println("---------------------------");
                     }
                 }
             }
         }
     }
    
-    /**
-     * May not use this method.
-     * @param checkingRow
-     * @param player
-     * @param row
-     * @param col
-     * @return 
-     */
+    /*
     private int checkAll(boolean checkingRow, char player, int row, int col) {
         int nextIndex = 0;
         if (checkFour(checkingRow, player, row, col)) {
@@ -109,6 +155,7 @@ public class Board {
         }
         return nextIndex;
     }
+    */
     
     /**
      * Checks if there is a 4 in a row.
@@ -117,10 +164,11 @@ public class Board {
      * @param symbol
      *                  the symbol of the player
      * @param row
-     *                  number of the row
+     *                  row number
      * @param col
-     *                  number of the column
+     *                  col number
      * @return 
+     *                  true if it found one; otherwise, false
      */
     private boolean checkFour(boolean checkingRow, char symbol, int row, int col) {
         boolean found = false;
@@ -155,12 +203,26 @@ public class Board {
                 }
             }
         }
+        // 4 in a row = MAX
         if (found && exactlyFour) {
             updateHValue(symbol, MAX);
         }
         return found;
     }
     
+    /**
+     * Checks if there is a 3 in a row.
+     * @param checkingRow
+     *                  if checking rows then true; otherwise, false
+     * @param symbol
+     *                  the symbol of the player
+     * @param row
+     *                  row number
+     * @param col
+     *                  col number
+     * @return 
+     *                  true if it found one; otherwise, false 
+     */
     private boolean checkThree(boolean checkingRow, char symbol,int row, int col) {
         boolean found = false;
         boolean startClosed = false;
@@ -208,14 +270,29 @@ public class Board {
                 }
             }
         }
+        // 3 in a row with 2 opens = HIGH
         if (found && !startClosed && !endClosed) {
-            updateHValue(symbol, MAX);
-        } else if (found && (!startClosed || !endClosed)) {
             updateHValue(symbol, HIGH);
+        // 3 in a row with 1 open = HIGH_MEDIUM
+        } else if (found && (!startClosed || !endClosed)) {
+            updateHValue(symbol, HIGH_MEDIUM);
         }
         return found;
     }
     
+    /**
+     * Checks if there is a disjoint 3 in a row. Ex. xx-x or x-xx
+     * @param checkingRow
+     *                  if checking rows then true; otherwise, false
+     * @param symbol
+     *                  the symbol of the player
+     * @param row
+     *                  row number
+     * @param col
+     *                  col number
+     * @return 
+     *                  true if it found one; otherwise, false 
+     */
     private boolean checkDisjointThree(boolean checkingRow, char symbol,int row, int col) {
         boolean found = false;
         boolean startClosed = false;
@@ -267,14 +344,29 @@ public class Board {
                 }
             }
         }
+        // 3 in a row with 2 opens = HIGH
         if (found && !startClosed && !endClosed) {
-            updateHValue(symbol, MAX);
-        } else if (found && (!startClosed || !endClosed)) {
             updateHValue(symbol, HIGH);
+        // 3 in a row with 1 open = HIGH_MEDIUM
+        } else if (found && (!startClosed || !endClosed)) {
+            updateHValue(symbol, HIGH_MEDIUM);
         }
         return found;
     }
     
+    /**
+     * Checks if there is a 2 in a row.
+     * @param checkingRow
+     *                  if checking rows then true; otherwise, false
+     * @param symbol
+     *                  the symbol of the player
+     * @param row
+     *                  row number
+     * @param col
+     *                  col number
+     * @return 
+     *                  true if it found one; otherwise, false 
+     */
     private boolean checkTwo(boolean checkingRow, char symbol, int row, int col) {
         boolean found = false;
         boolean startClosed = false;
@@ -322,14 +414,29 @@ public class Board {
                 }
             }
         }
+        // 2 in a row with 2 opens = MEDIUM
         if (found && !startClosed && !endClosed) {
-            updateHValue(symbol, HIGH);
-        } else if (found && (!startClosed || !endClosed)) {
             updateHValue(symbol, MEDIUM);
+        // 2 in a row with 2 opens = LOW   
+        } else if (found && (!startClosed || !endClosed)) {
+            updateHValue(symbol, LOW);
         }
         return found;
     }
     
+    /**
+     * Checks if there is a disjoint 2 in a row. Ex. x-x
+     * @param checkingRow
+     *                  if checking rows then true; otherwise, false
+     * @param symbol
+     *                  the symbol of the player
+     * @param row
+     *                  row number
+     * @param col
+     *                  col number
+     * @return 
+     *                  true if it found one; otherwise, false 
+     */
     private boolean checkDisjointTwo(boolean checkingRow, char symbol, int row, int col) {
         boolean found = false;
         boolean startClosed = false;
@@ -377,16 +484,31 @@ public class Board {
                 }
             }
         }
+        // 2 in a row with 2 opens = MEDIUM
         if (found && !startClosed && !endClosed) {
-            updateHValue(symbol, HIGH);
-        } else if (found && (!startClosed || !endClosed)) {
             updateHValue(symbol, MEDIUM);
+        // 2 in a row with 2 opens = LOW   
+        } else if (found && (!startClosed || !endClosed)) {
+            updateHValue(symbol, LOW);
         }
         return found;
     }
     
+    /**
+     * Checks if there is a 1 in a row.
+     * @param checkingRow
+     *                  if checking rows then true; otherwise, false
+     * @param symbol
+     *                  the symbol of the player
+     * @param row
+     *                  row number
+     * @param col
+     *                  col number
+     * @return 
+     *                  true if it found one; otherwise, false 
+     */
     private boolean checkOne(boolean checkingRow, char symbol, int row, int col) {
-        boolean found = false;
+        boolean found = true;
         boolean startClosed = false;
         boolean endClosed = false;
         // Check row
@@ -414,6 +536,7 @@ public class Board {
                 endClosed = checkEnd(checkingRow, row, col);
             }
         }
+        // Add one per every open
         if (!startClosed) {
             updateHValue(symbol, ONE);
         }
@@ -423,7 +546,15 @@ public class Board {
         return found;
     }
     
+    /**
+     * Updates the heuristic value with the given points.
+     * @param symbol
+     *              the symbol that is currently evaluated
+     * @param points 
+     *              the value of points
+     */
     private void updateHValue(char symbol, int points) {
+        // If it's first player, add. Otherwise, subtract
         if (symbol == firstPlayer) {
             hValue = hValue + points;
         } else {
@@ -431,6 +562,17 @@ public class Board {
         }
     }
     
+    /**
+     * Checks if the start is open, meaning it's BLANK.
+     * @param checkingRow
+     *                  if checking rows then true; otherwise, false
+     * @param row
+     *                  row number
+     * @param col
+     *                  col number
+     * @return
+     *                  true if its closed; otherwise, false.
+     */
     private boolean checkStart(boolean checkingRow, int row, int col) {
         boolean closed = false;
         if (checkingRow) {
@@ -445,6 +587,17 @@ public class Board {
         return closed;
     }
     
+    /**
+     * Checks if the end is open, meaning it's BLANK.
+     * @param checkingRow
+     *                  if checking rows then true; otherwise, false
+     * @param row
+     *                  row number
+     * @param col
+     *                  col number
+     * @return
+     *                  true if its closed; otherwise, false.
+     */
     private boolean checkEnd(boolean checkingRow, int row, int col) {
         boolean closed = false;
         if (checkingRow) {     
@@ -459,6 +612,7 @@ public class Board {
         return closed;
     }
     
+    /*
     private char opponentSymbol(char symbol) {
         if (symbol == HUMAN) {
             return COMPUTER;
@@ -466,5 +620,13 @@ public class Board {
             return HUMAN;
         }
     }
-    
+    */
+
+    public char[][] getState() {
+        return state;
+    }
+
+    public int gethValue() {
+        return hValue;
+    }
 }
