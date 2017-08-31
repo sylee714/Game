@@ -17,7 +17,9 @@ public class Game {
     private final int SIZE = 8;
     private char[][] board;
     private final char[] ROWS = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-    
+
+    public Game() {};
+
     public Game(long timeLimit, boolean humanFirst) {
         this.timeLimit = timeLimit;
         this.humanFirst = humanFirst;
@@ -51,7 +53,11 @@ public class Game {
         int value = 0;
         return value;
     }
-    
+
+    public char[][] getState() {
+        return board;
+    }
+
     public void print() {
         System.out.println("  1 2 3 4 5 6 7 8");
         for (int i = 0; i < SIZE; ++i) {

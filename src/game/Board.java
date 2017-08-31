@@ -26,6 +26,8 @@ public class Board {
 
     // List<> rootsChildrenScore = new ArrayList<>();
 
+    public Board() {}
+
     public Board(char[][] state, char firstPlayer) {
         hValue = 0;
         this.state = state;
@@ -682,5 +684,9 @@ public class Board {
 
     public int gethValue() {
         return hValue;
+    }
+
+    public void setFirstPlayer() {
+
     }
 }
