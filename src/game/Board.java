@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 /**
  *  This class represents a board. It stores the current state and 
  *  calculates the heuristic value of its state.
@@ -19,8 +21,11 @@ public class Board {
     private int hValue; // heuristic value
     //private boolean overFour;
     private char firstPlayer; // to indicate who went first; 0 = human, 1 = computer
-    private char secondPlayer; 
-    
+    private char secondPlayer;
+    private int upToDepth = -1;
+
+    // List<> rootsChildrenScore = new ArrayList<>();
+
     public Board(char[][] state, char firstPlayer) {
         hValue = 0;
         this.state = state;
@@ -32,7 +37,56 @@ public class Board {
         }
         evaluate();
     }
-    
+
+    public int alphaBetaPruning(int hValue, int alpha, int beta, int depth, char player) {
+        if(beta <= alpha) {
+            System.out.println("Pruning at depth = " + depth);
+            if(player == firstPlayer)
+                return Integer.MAX_VALUE;
+            else
+                return Integer.MIN_VALUE;
+        }
+
+        if(depth == 0 /* || gameOver()*/)
+            return hValue;
+
+        // List<> availableStates = methodToGenerateAllStates();
+
+        int maxValue = Integer.MIN_VALUE, minValue = Integer.MAX_VALUE;
+
+        // 3 is placeholder for number of spots on the board still open
+        for(int i = 0; i < 3 ; i++) {
+
+            int currentValue = 0;
+
+            if(player == firstPlayer) {
+                /*
+                 place a move(point, X);
+                 currentValue = alphaBetaPruning(alpha, beta, depth + 1, secondPlayer);
+                 maxValue
+
+                 alpha = Math.max(currentValue, alpha);
+                 */
+            } else if(player == secondPlayer) {
+                /*
+                place a move (point, O);
+                currentValue = alphaBetaPruning(alpha, beta, depth + 1, first player);
+                minValue = Math.min(minValue, currentValue);
+
+                beta = Math.min(currentValue, beta);
+                 */
+            }
+
+            // reset board method
+
+            //if pruning happens, sibling states will be skipped
+            if(currentValue == Integer.MAX_VALUE || currentValue == Integer.MIN_VALUE)
+                break;
+
+        }
+        return firstPlayer == 1 ? maxValue : minValue;
+    }
+
     private void evaluate() {
         calculatePlayerMoves(HUMAN);
         System.out.println("Value: " + hValue);
