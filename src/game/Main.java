@@ -93,8 +93,8 @@ public class Main {
      */
     public static void playerChoice(Game game) {
         Scanner scan = new Scanner(System.in);
+        int row,col;
         String choice = "";
-//        String move;
 
         boolean correctIn = false;
         while(!correctIn) {
@@ -109,8 +109,13 @@ public class Main {
                     System.out.println("Invalid point value!");
             }
         }
-        int row = (int)choice.charAt(0) - 97; // accounts for lower case ASCII value
-        int col = (int)choice.charAt(1) - 49; // accounts for pos int ASCII value
+        if((int)choice.charAt(0) < 97) {
+            row = (int)choice.charAt(0) - 65; // accounts for upper case ASCII value
+        } else {
+            row = (int)choice.charAt(0) - 97; // accounts for lower case ASCII value
+        }
+
+        col = (int)choice.charAt(1) - 49; // accounts for pos int ASCII value
         game.getMove(row, col);
     }
 }
