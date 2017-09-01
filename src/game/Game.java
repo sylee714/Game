@@ -50,7 +50,6 @@ public class Game {
             return true;
         } else {
             System.out.println("It's already occupied.");
-            System.out.println();
             return false;
         }
     }
@@ -72,8 +71,8 @@ public class Game {
                     board[i][j] = COMPUTER;
                     long searchTimeLimit = ((TIME_LIMIT - 1000) / (checkValidMoves()));
                     score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, searchTimeLimit);
-                    System.out.println("moveVal: " + score);
-                    System.out.println("bestVal: " + best);
+                    //System.out.println("moveVal: " + score);
+                    //System.out.println("bestVal: " + best);
                     if (score > best) {
                         bestRow = i;
                         bestCol = j;
@@ -109,16 +108,13 @@ public class Game {
 
         boolean stop = false;
         // Terminal state
-        if (searchCutOff || depth == 0 || terminate(board)) {
+        if (searchCutOff || depth == 0 || terminate(board) != -1) {
             char currentTurn = BLANK;
             if (isMax) {
                 currentTurn = secondPlayer;
             } else {
                 currentTurn = firstPlayer;
             }
-            //print(state);
-            //System.out.println(analyze(state, currentTurn));
-            //System.out.println(currentTurn);
             return calculate(board, currentTurn);
         }
         // maxValue
@@ -207,10 +203,19 @@ public class Game {
      * @return the total value of the board
      */
     public int calculate(char[][] board, char currentTurn) {
-        return (checkRows(board, COMPUTER, currentTurn) + 
-                checkCols(board, COMPUTER, currentTurn)) - 
-                (checkRows(board, HUMAN, currentTurn) +
-                checkCols(board, HUMAN, currentTurn));
+        int computerValue = checkRows(board, COMPUTER, currentTurn) + 
+                            checkCols(board, COMPUTER, currentTurn) +
+                            checkDisjointTwoRows(board, COMPUTER, currentTurn) + 
+                            checkDisjointTwoCols(board, COMPUTER, currentTurn) +
+                            checkDisjointThreeRows(board, COMPUTER, currentTurn) + 
+                            checkDisjointThreeCols(board, COMPUTER, currentTurn);
+        int humanValue = checkRows(board, HUMAN, currentTurn) + 
+                            checkCols(board, HUMAN, currentTurn) +
+                            checkDisjointTwoRows(board, HUMAN, currentTurn) + 
+                            checkDisjointTwoCols(board, HUMAN, currentTurn) +
+                            checkDisjointThreeRows(board, HUMAN, currentTurn) + 
+                            checkDisjointThreeCols(board, HUMAN, currentTurn);;
+        return computerValue - humanValue;
     }
     
     /**
@@ -291,6 +296,178 @@ public class Game {
         return value;
     }
     
+    public int checkDisjointTwoRows(char[][] board, char player, char currentTurn) {
+        int value = 0;
+        int openEnds = 0;
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (board[i][j] == player) {
+                    if (j >= 0 && j <= 5) {
+                        if ((board[i][j+1] == BLANK) && (board[i][j+2] == player)) {
+                            if (checkFirstEnd(true, board, i, j)) {
+                                openEnds++;
+                            }
+                            if (checkSecondEnd(true, board, i, j+2)) {
+                                openEnds++;
+                            }
+                            value += getValue(2, openEnds, player == currentTurn);
+                            j += 2;
+                            openEnds = 0;
+                        }
+                    }
+                }
+            }
+        }
+        return value;
+    }
+    
+    
+    
+    public int checkDisjointTwoCols(char[][] board, char player, char currentTurn) {
+        int value = 0;
+        int openEnds = 0;
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (board[j][i] == player) {
+                    if (j >= 0 && j <= 5) {
+                        if ((board[j+1][i] == BLANK) && (board[j+2][i] == player)) {
+                            if (checkFirstEnd(false, board, j, i)) {
+                                openEnds++;
+                            }
+                            if (checkSecondEnd(false, board, j+2, i)) {
+                                openEnds++;
+                            }
+                            value += getValue(2, openEnds, player == currentTurn);
+                            j += 2;
+                            openEnds = 0;
+                        }
+                    }
+                }
+            }
+        }
+        return value;
+    }
+    
+    public int checkDisjointThreeRows(char[][] board, char player, char currentTurn) {
+        int value = 0;
+        int openEnds = 0;
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (board[i][j] == player) {
+                    if (j >= 0 && j <= 4) {
+                        if ((board[i][j+1] == BLANK) && (board[i][j+2] == player) && (board[i][j+3] == player)) {
+                            if (checkFirstEnd(true, board, i, j)) {
+                                openEnds++;
+                            }
+                            if (checkSecondEnd(true, board, i, j+3)) {
+                                openEnds++;
+                            }
+                            value += getValue(3, openEnds, player == currentTurn);
+                            j += 3;
+                            openEnds = 0;
+                        } else if ((board[i][j+1] == player) && (board[i][j+2] == BLANK) && (board[i][j+3] == player)) {
+                            if (checkFirstEnd(true, board, i, j)) {
+                                openEnds++;
+                            }
+                            if (checkSecondEnd(true, board, i, j+3)) {
+                                openEnds++;
+                            }
+                            value += getValue(3, openEnds, player == currentTurn);
+                            j += 3;
+                            openEnds = 0;
+                        }
+                    }
+                }
+            }
+        }
+        return value;
+    }
+    
+    
+    
+    public int checkDisjointThreeCols(char[][] board, char player, char currentTurn) {
+        int value = 0;
+        int openEnds = 0;
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (board[j][i] == player) {
+                    if (j >= 0 && j <= 4) {
+                        if ((board[j+1][i] == BLANK) && (board[j+2][i] == player) && (board[j+3][i] == player)) {
+                            if (checkFirstEnd(false, board, j, i)) {
+                                openEnds++;
+                            }
+                            if (checkSecondEnd(false, board, j+3, i)) {
+                                openEnds++;
+                            }
+                            value += getValue(3, openEnds, player == currentTurn);
+                            j += 3;
+                            openEnds = 0;
+                        } else if ((board[j+1][i] == player) && (board[j+2][i] == BLANK) && (board[j+3][i] == player)) {
+                            if (checkFirstEnd(false, board, j, i)) {
+                                openEnds++;
+                            }
+                            if (checkSecondEnd(false, board, j+3, i)) {
+                                openEnds++;
+                            }
+                            value += getValue(3, openEnds, player == currentTurn);
+                            j += 3;
+                            openEnds = 0;
+                        }
+                    }
+                }
+            }
+        }
+        return value;
+    }
+    
+    public boolean checkFirstEnd(boolean checkingRow, char[][] board, int row, int col) {
+        if (checkingRow) {
+            if (col == 0) {
+                return false;
+            } else {
+                if (board[row][col-1] == BLANK) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            if (row == 0) {
+                return false;
+            } else {
+                if (board[row-1][col] == BLANK) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+    
+    public boolean checkSecondEnd(boolean checkingRow, char[][] board, int row, int col) {
+        if (checkingRow) {
+            if (col >= 7) {
+                return false;
+            } else {
+                if (board[row][col+1] == BLANK) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            if (row >= 7) {
+                return false;
+            } else {
+                if (board[row+1][col] == BLANK) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+    
     /**
      * Returns the value of one of the cases. Based on whose turn is, it
      * give bonus.
@@ -347,15 +524,19 @@ public class Game {
     }
     
     /**
-     * To check if it reached a terminal state
+     * To check if it reached a terminal.
      * @param board the board 
-     * @return true if it reached a terminal state; otherwise, false 
+     * @return 0 if draw; 1 is human won; 2 if computer won; -1 if it's not a terminal
      */
-    private boolean terminate(char[][] board) {
+    public int terminate(char[][] board) {
         if (blankSpaces(board) == 0 || checkGoal(HUMAN, board) || checkGoal(COMPUTER, board)) {
-            return true;
+            return 0;
+        } else if (checkGoal(HUMAN, board)){
+            return 1;
+        } else if (checkGoal(COMPUTER, board)) {
+            return 2;
         } else {
-            return false;
+            return -1;
         }
     }
     
