@@ -44,8 +44,13 @@ public class Main {
             // loop to run test UI
             for(int i = 0; i < 15 ; i++) {
                 System.out.println("Computer's Turn...\n");
+                long tStart = System.currentTimeMillis();
                 game.makeMove();
+                long tEnd = System.currentTimeMillis();
+                long tDelta = tEnd - tStart;
+                double tElapsed = (double) tDelta / 1000.0;
                 game.print();
+                System.out.printf("Computer took: %.2f seconds", tElapsed + '\n');
                 playerChoice(game);
                 System.out.println();
                 game.print();

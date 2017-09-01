@@ -70,9 +70,9 @@ public class Game {
                     // Make a move
                     board[i][j] = COMPUTER;
                     long searchTimeLimit = ((TIME_LIMIT - 1000)/checkValidMoves());
-//                    score = iterativeDeepeningSearch(board, false, searchTimeLimit);
-                    long startTime = System.currentTimeMillis();
-                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, TIME_LIMIT);
+                    score = iterativeDeepeningSearch(board, false, searchTimeLimit);
+//                    long startTime = System.currentTimeMillis();
+//                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, TIME_LIMIT);
                     //System.out.println("moveVal: " + score);
                     //System.out.println("bestVal: " + best);
                     if (score > best) {
@@ -183,6 +183,11 @@ public class Game {
                 break;
 
             int searchResult =  minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, isMax, currentTime, endTime - currentTime);
+
+//            if(searchResult >= winCutoff)
+            if(!searchCutOff) {
+                score = searchResult;
+            }
         }
         return score;
     }
