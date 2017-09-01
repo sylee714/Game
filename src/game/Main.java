@@ -19,21 +19,6 @@ public class Main {
                 state[i][j] = '-';
             }
         }
-//        state[3][1] = 'O';
-//        //state[3][2] = 'O';
-//        state[3][3] = 'O';
-//        //state[3][4] = 'X';
-//        state[2][2] = 'X';
-//        Game game = new Game('O');
-//        game.print(state);
-//        System.out.println(game.calculate(state, 'X'));
-//        System.out.println(game.calculate(state, 'O'));
-//        //state[2][1] = 'X';
-//        game.print(state);
-//        System.out.println(game.calculate(state, 'X'));
-//        System.out.println(game.calculate(state, 'O'));
-        
-        
 
         char choice = pickFirst();
         Game game = new Game(choice);
@@ -47,14 +32,13 @@ public class Main {
                 game.print();
                 System.out.println("Computer's Turn...\n");
 
-//                Thread.sleep(5000); // simulate computer thinking...
-
                 long tStart = System.currentTimeMillis();
                 game.makeMove();
                 long tEnd = System.currentTimeMillis();
                 long tDelta = tEnd - tStart;
+                double tElapsed = (double) tDelta / 1000.0;
                 game.print();
-                System.out.printf("Computer took: %d milliseconds", tDelta + '\n');
+                System.out.printf("Computer took: %.2f seconds", tElapsed + '\n');
             }
         } else {
             // loop to run test UI
@@ -103,7 +87,6 @@ public class Main {
         Scanner scan = new Scanner(System.in);
         int row,col;
         String choice = "";
-
         boolean correctIn = false;
         while(!correctIn) {
             System.out.print("\nChoose your next move: ");
@@ -122,7 +105,6 @@ public class Main {
         } else {
             row = (int)choice.charAt(0) - 97; // accounts for lower case ASCII value
         }
-
         col = (int)choice.charAt(1) - 49; // accounts for pos int ASCII value
         game.getMove(row, col);
     }

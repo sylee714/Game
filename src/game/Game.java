@@ -13,8 +13,6 @@ public class Game {
     private final char BLANK = '-';
 
     private final int TIME_LIMIT = 5000; // time in milliseconds
-    private final int EVAL_PER_SEC = 100;
-    private final int winCutOff = 500000;
     private boolean searchCutOff = false;
 
     private char[][] board;
@@ -58,19 +56,23 @@ public class Game {
      * Computer makes the best move.
      */
     public void makeMove() {
-        long startTime = System.currentTimeMillis();
+        // original location of start time
         int best = Integer.MIN_VALUE;
         int score;
         int bestRow = -1;
-        int bestCol = -1; 
-        // Go thru every possible move.
+        int bestCol = -1;
+
+
+        // Go through every possible move.
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
                 if (board[i][j] == BLANK) {
                     // Make a move
                     board[i][j] = COMPUTER;
-                    long searchTimeLimit = ((TIME_LIMIT - 1000) / (checkValidMoves()));
-                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, searchTimeLimit);
+                    long searchTimeLimit = ((TIME_LIMIT - 1000)/checkValidMoves());
+//                    score = iterativeDeepeningSearch(board, false, searchTimeLimit);
+                    long startTime = System.currentTimeMillis();
+                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, TIME_LIMIT);
                     //System.out.println("moveVal: " + score);
                     //System.out.println("bestVal: " + best);
                     if (score > best) {
@@ -108,6 +110,7 @@ public class Game {
 
         boolean stop = false;
         // Terminal state
+        // searchCutOff ||
         if (searchCutOff || depth == 0 || terminate(board) != -1) {
             char currentTurn = BLANK;
             if (isMax) {
@@ -166,23 +169,23 @@ public class Game {
         } 
     }
 
-//    public int iterativeDeepeningSearch(char[][] board, long timeLimit) {
-//        long startTime = System.currentTimeMillis();
-//        long endTime = startTime + timeLimit;
-//        int depth = 1;
-//        int score = 0;
-//        searchCutOff = false;
-//
-//        while(true) {
-//            long currentTime = System.currentTimeMillis();
-//
-//            if(currentTime >= endTime)
-//                break;
-//
-//            int searchResult =  minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, currentTime, endTime - currentTime);
-//        }
-//        return score;
-//    }
+    public int iterativeDeepeningSearch(char[][] board,boolean isMax, long timeLimit) {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + timeLimit;
+        int depth = 1;
+        int score = 0;
+        searchCutOff = false;
+
+        while(true) {
+            long currentTime = System.currentTimeMillis();
+
+            if(currentTime >= endTime)
+                break;
+
+            int searchResult =  minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, isMax, currentTime, endTime - currentTime);
+        }
+        return score;
+    }
 
     public int checkValidMoves() {
         int validMoves = 0;
