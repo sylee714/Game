@@ -6,6 +6,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -23,49 +24,32 @@ public class Main {
                 state[i][j] = '-';
             }
         }
+
+
+        char choice = pickFirst();
         
-        /*
-        state[7][5] = 'X';
-        state[7][4] = 'X';
-        state[7][7] = 'X';
-        //state[0][4] = 'O';
-        //state[0][6] = 'O';
-        //state[0][7] = 'O';
-        //state[1][5] = 'O';
-        state[7][6] = 'O';
-        state[6][6] = 'O';
-        //state[2][4] = 'O';
-        //state[2][3] = 'O';
-        //state[2][2] = 'O';
-        //state[5][4] = 'X';
-        //state[6][4] = 'X';
-        //state[7][4] = 'X';
-        //state[6][5] = 'O';
-        //state[6][4] = 'O';
-        //state[1][3] = 'X';
-        //state[4][6] = 'X';
-        //state[4][7] = 'O';
-        //state[3][2] = 'X';
-        //state[3][3] = 'X';
-        //state[3][4] = 'X';
-        //state[4][4] = 'X';
-        //state[7][4] = 'X';
-        //state[3][5] = 'X';
-        //state[3][1] = 'O';
-        */
-        
-        
-        Game game = new Game('O');
+        Game game = new Game(choice);
+        // loop to run test UI
+        for(int i = 0; i < 15 ; i++) {
+            game.print();
+            playerChoice(game);
+            System.out.println();
+            game.print();
+            System.out.println("Computer's Turn...\n");
+            game.makeMove();
+            game.print();
+        }
+
         //game.print(state);
         //System.out.println(game.evaluate(state));
-        game.getMove(3,3);
-        game.print();
-        game.makeMove();
-        game.print();
-        game.getMove(3,4);
-        game.print();
-        game.makeMove();
-        game.print();
+//        game.getMove(3,3);
+//        game.print();
+//        game.makeMove();
+//        game.print();
+//        game.getMove(3,4);
+//        game.print();
+//        game.makeMove();
+//        game.print();
         /*
         state[6][4] = 'X';
         game.print(state);
@@ -87,5 +71,35 @@ public class Main {
        
         
     }
-    
+
+    /**
+     * Prompts user if player takes first turn
+     * @return  char identifier used in Game class
+     */
+    public static char pickFirst() {
+        Scanner scan = new Scanner(System.in);
+        String whosTurn;
+        System.out.print("Would you like to go first? (y/n): ");
+        whosTurn = scan.next().toLowerCase();
+        if(whosTurn.equals("y")) {
+            return 'O';
+        } else {
+            return 'X';
+        }
+    }
+
+    /**
+     * Prompts user for where to place tic/tac
+     * @param game instance of the Game class to modify state
+     */
+    public static void playerChoice(Game game) {
+        Scanner scan = new Scanner(System.in);
+        String choice;
+//        String move;
+        System.out.print("Choose your next move: ");
+        choice = scan.next();
+        int row = (int)choice.charAt(0) - 97; // accounts for lower case ASCII value
+        int col = (int)choice.charAt(1) - 49; // accounts for pos int ASCII value
+        game.getMove(row, col);
+    }
 }

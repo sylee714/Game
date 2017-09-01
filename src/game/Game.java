@@ -9,9 +9,9 @@ import java.util.Random;
 public class Game {
     private final int MAX = 1000000;
     private final int HIGH = 10000;
-    private final int HIGH_MEDIUM = 1050;
-    private final int MEDIUM = 1000;
-    private final int LOW = 100;
+    private final int HIGH_MEDIUM = 5000;
+    private final int MEDIUM = 7000;
+    private final int LOW = 1000;
     private final int ONE = 1;
     private final int SIZE = 8; // Size of the board
     private final char HUMAN = 'O';
@@ -58,31 +58,36 @@ public class Game {
     
     public void makeMove() {
         int bestVal = Integer.MIN_VALUE;
+        int moveVal;
         int bestRow = -1;
         int bestCol = -1; 
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
                 if (board[i][j] == BLANK) {
-                    board[i][j] = COMPUTER;
+                    board[i][j] = firstPlayer;
                     if (firstPlayer == COMPUTER) {
-                        int moveVal = minimax(board, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-                        board[i][j] = BLANK;
+                        moveVal = minimax(board, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                         if (moveVal > bestVal) {
                             bestRow = i;
                             bestCol = j;
+                            bestVal = moveVal;
                         }
+                        board[i][j] = BLANK;
                     } else {
-                        int moveVal = minimax(board, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                        moveVal = minimax(board, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
                         board[i][j] = BLANK;
                         if (moveVal > bestVal) {
                             bestRow = i;
                             bestCol = j;
+                            bestVal = moveVal;
                         }
+                        
                     }
                 }
             }
         }
         board[bestRow][bestCol] = COMPUTER;
+        //System.out.println(evaluate(board));
     }
     
     public int minimax(char[][] state, int depth, int alpha, int beta, boolean isMax){
@@ -100,17 +105,16 @@ public class Game {
                         state[i][j] = firstPlayer;
                         best = Math.max(best, minimax(state, depth - 1, alpha, beta, false));
                         state[i][j] = BLANK;
-                        //alpha = Math.max(alpha, best);
-                        //if (beta <= alpha) {
-                            //System.out.println("Max pruned");
-                           // stop = true;
-                           // break;
-                        //}
+                        alpha = Math.max(alpha, best);
+                        if (beta <= alpha) {
+                           stop = true;
+                           break;
+                        }
                     }
                 }
-                //if (stop) {
-                  //  break;
-                //}
+                if (stop) {
+                    break;
+                }
             }
             return best;
         } else {
@@ -121,17 +125,16 @@ public class Game {
                         state[i][j] = secondPlayer;
                         best = Math.min(best, minimax(state, depth - 1, alpha, beta, true));
                         state[i][j] = BLANK;
-                        //beta = Math.min(beta, best);
-                        //if (beta <= alpha) {
-                            //System.out.println("Min pruned");
-                            //stop = true;
-                            //break;
-                        //}
+                        beta = Math.min(beta, best);
+                        if (beta <= alpha) {
+                            stop = true;
+                            break;
+                        }
                     }
                 }
-                //if (stop) {
-                  //  break;
-                //}
+                if (stop) {
+                    break;
+                }
             }
             return best;
         } 
@@ -282,7 +285,7 @@ public class Game {
                 if (state[j][i] == player) {
                     skipIndex = checkOverFour(false, state,player, j, i);
                     if (skipIndex != 0) {
-                        System.out.println(skipIndex);
+                        //System.out.println(skipIndex);
                         j = j + skipIndex; 
                     } else if (checkDisjointThree(false, state,player, j, i)) {
                         //System.out.println("Checking cols");
@@ -339,92 +342,96 @@ public class Game {
         if (checkingRow) {
             // Only from 0 to 4
             if (col >= 0 && col < 5) {
-                // 5 in a line
-                if (col + 4 < SIZE) {
-                    if (state[row][col + 1] == symbol && 
-                            state[row][col + 2] == symbol && 
-                            state[row][col + 3] == symbol && 
-                            state[row][col + 4] == symbol) {
-                        skipIndex = 4;
+                if (state[row][col] == symbol) {
+                    // 5 in a line
+                    if (col + 4 < SIZE) {
+                        if (state[row][col + 1] == symbol && 
+                                state[row][col + 2] == symbol && 
+                                state[row][col + 3] == symbol && 
+                                state[row][col + 4] == symbol) {
+                            skipIndex = 4;
+                        }
                     }
-                }
-                // 6 in a line
-                if (col + 5 < SIZE) {
-                    if (state[row][col + 1] == symbol && 
-                            state[row][col + 2] == symbol && 
-                            state[row][col + 3] == symbol && 
-                            state[row][col + 4] == symbol && 
-                            state[row][col + 5] == symbol) {
-                        skipIndex = 5;
+                    // 6 in a line
+                    if (col + 5 < SIZE) {
+                        if (state[row][col + 1] == symbol && 
+                                state[row][col + 2] == symbol && 
+                                state[row][col + 3] == symbol && 
+                                state[row][col + 4] == symbol && 
+                                state[row][col + 5] == symbol) {
+                            skipIndex = 5;
+                        }
                     }
-                }
-                // 7 in a line
-                if (col + 6 < SIZE) {
-                    if (state[row][col + 1] == symbol && 
-                            state[row][col + 2] == symbol && 
-                            state[row][col + 3] == symbol && 
-                            state[row][col + 4] == symbol && 
-                            state[row][col + 5] == symbol && 
-                            state[row][col + 6] == symbol) {
-                        skipIndex = 6;
+                    // 7 in a line
+                    if (col + 6 < SIZE) {
+                        if (state[row][col + 1] == symbol && 
+                                state[row][col + 2] == symbol && 
+                                state[row][col + 3] == symbol && 
+                                state[row][col + 4] == symbol && 
+                                state[row][col + 5] == symbol && 
+                                state[row][col + 6] == symbol) {
+                            skipIndex = 6;
+                        }
                     }
-                }
-                // 8 in a line
-                if (col + 7 < SIZE) {
-                    if (state[row][col + 1] == symbol && 
-                            state[row][col + 2] == symbol && 
-                            state[row][col + 3] == symbol && 
-                            state[row][col + 4] == symbol && 
-                            state[row][col + 5] == symbol && 
-                            state[row][col + 6] == symbol && 
-                            state[row][col + 7] == symbol) {
-                        skipIndex = 7;
+                    // 8 in a line
+                    if (col + 7 < SIZE) {
+                        if (state[row][col + 1] == symbol && 
+                                state[row][col + 2] == symbol && 
+                                state[row][col + 3] == symbol && 
+                                state[row][col + 4] == symbol && 
+                                state[row][col + 5] == symbol && 
+                                state[row][col + 6] == symbol && 
+                                state[row][col + 7] == symbol) {
+                            skipIndex = 7;
+                        }
                     }
                 }
             }
         // Check Column
         } else {
             if (row >= 0 && row < 5) {
-                // 5 in a line
-                if (row + 4 < SIZE) {
-                    if (state[row + 1][col] == symbol && 
-                            state[row + 2][col] == symbol && 
-                            state[row + 3][col] == symbol && 
-                            state[row + 4][col] == symbol) {
-                        skipIndex = 4;
+                if (state[row][col] == symbol) {
+                    // 5 in a line
+                    if (row + 4 < SIZE) {
+                        if (state[row + 1][col] == symbol && 
+                                state[row + 2][col] == symbol && 
+                                state[row + 3][col] == symbol && 
+                                state[row + 4][col] == symbol) {
+                            skipIndex = 4;
+                        }
                     }
-                }
-                // 6 in a line
-                if (row + 5 < SIZE) {
-                    if (state[row + 1][col] == symbol && 
-                            state[row + 2][col] == symbol && 
-                            state[row + 3][col] == symbol && 
-                            state[row + 4][col] == symbol && 
-                            state[row + 5][col] == symbol) {
-                        skipIndex = 5;
+                    // 6 in a line
+                    if (row + 5 < SIZE) {
+                        if (state[row + 1][col] == symbol && 
+                                state[row + 2][col] == symbol && 
+                                state[row + 3][col] == symbol && 
+                                state[row + 4][col] == symbol && 
+                                state[row + 5][col] == symbol) {
+                            skipIndex = 5;
+                        }
                     }
-                }
-                // 7 in a line
-                if (row + 6 < SIZE) {
-                    if (state[row + 1][col] == symbol && 
-                            state[row + 2][col] == symbol && 
-                            state[row + 3][col] == symbol && 
-                            state[row + 4][col] == symbol && 
-                            state[row + 5][col] == symbol && 
-                            state[row + 6][col] == symbol) {
-                        skipIndex = 6;
+                    // 7 in a line
+                    if (row + 6 < SIZE) {
+                        if (state[row + 1][col] == symbol && 
+                                state[row + 2][col] == symbol && 
+                                state[row + 3][col] == symbol && 
+                                state[row + 4][col] == symbol && 
+                                state[row + 5][col] == symbol && 
+                                state[row + 6][col] == symbol) {
+                            skipIndex = 6;
+                        }
                     }
-                }
-                // 8 in a line
-                if (row + 7 < SIZE) {
-                    if (state[row + 1][col] == symbol && 
-                            state[row + 2][col] == symbol && 
-                            state[row + 3][col] == symbol && 
-                            state[row + 4][col] == symbol && 
-                            state[row + 5][col] == symbol && 
-                            state[row + 6][col] == symbol && 
-                            state[row + 7][col] == symbol) {
-                        skipIndex = 7;
+                    // 8 in a line
+                    if (row + 7 < SIZE) {
+                        if (state[row + 1][col] == symbol && 
+                                state[row + 2][col] == symbol && 
+                                state[row + 3][col] == symbol && 
+                                state[row + 4][col] == symbol && 
+                                state[row + 5][col] == symbol && 
+                                state[row + 6][col] == symbol && 
+                                state[row + 7][col] == symbol) {
+                            skipIndex = 7;
+                        }
                     }
                 }
             }
@@ -876,5 +883,10 @@ public class Game {
             System.out.println();
         }
         System.out.println();
+    }
+    
+    public void getValue() {
+        System.out.println(hValue);
+        System.out.println(evaluate(board));
     }
 }
