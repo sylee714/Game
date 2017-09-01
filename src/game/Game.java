@@ -109,9 +109,13 @@ public class Game {
             searchCutOff = true;
 
         boolean stop = false;
+        int whoWon = terminate(board);
+        if (whoWon != 0) {
+            return whoWon;
+        }
         // Terminal state
         // searchCutOff ||
-        if (searchCutOff || depth == 0 || terminate(board) != -1) {
+        if (searchCutOff || depth == 0) {
             char currentTurn = BLANK;
             if (isMax) {
                 currentTurn = secondPlayer;
@@ -304,6 +308,13 @@ public class Game {
         return value;
     }
     
+    /**
+     * Check if there is a disjoint 2 in a line, in rows. Ex. X-X
+     * @param board the board
+     * @param player the player
+     * @param currentTurn whose turn is it
+     * @return the value
+     */
     public int checkDisjointTwoRows(char[][] board, char player, char currentTurn) {
         int value = 0;
         int openEnds = 0;
@@ -329,8 +340,13 @@ public class Game {
         return value;
     }
     
-    
-    
+    /**
+     * Check if there is a disjoint 2 in a line, in columns. Ex. X-X
+     * @param board the board
+     * @param player the player
+     * @param currentTurn whose turn is it
+     * @return the value
+     */
     public int checkDisjointTwoCols(char[][] board, char player, char currentTurn) {
         int value = 0;
         int openEnds = 0;
@@ -356,6 +372,13 @@ public class Game {
         return value;
     }
     
+    /**
+     * Check if there is a disjoint 3 in a line, in columns. Ex. X-XX or XX-X
+     * @param board the board 
+     * @param player the player
+     * @param currentTurn whose turn is it
+     * @return the value
+     */
     public int checkDisjointThreeRows(char[][] board, char player, char currentTurn) {
         int value = 0;
         int openEnds = 0;
@@ -363,6 +386,7 @@ public class Game {
             for (int j = 0; j < SIZE; ++j) {
                 if (board[i][j] == player) {
                     if (j >= 0 && j <= 4) {
+                        //X-XX
                         if ((board[i][j+1] == BLANK) && (board[i][j+2] == player) && (board[i][j+3] == player)) {
                             if (checkFirstEnd(true, board, i, j)) {
                                 openEnds++;
@@ -373,6 +397,7 @@ public class Game {
                             value += getValue(3, openEnds, player == currentTurn);
                             j += 3;
                             openEnds = 0;
+                        //XX-X    
                         } else if ((board[i][j+1] == player) && (board[i][j+2] == BLANK) && (board[i][j+3] == player)) {
                             if (checkFirstEnd(true, board, i, j)) {
                                 openEnds++;
@@ -391,8 +416,13 @@ public class Game {
         return value;
     }
     
-    
-    
+    /**
+     * Check if there is a disjoint 3 in a line, in columns. Ex. X-XX or XX-X
+     * @param board the board 
+     * @param player the player
+     * @param currentTurn whose turn is it
+     * @return the value
+     */
     public int checkDisjointThreeCols(char[][] board, char player, char currentTurn) {
         int value = 0;
         int openEnds = 0;
@@ -400,6 +430,7 @@ public class Game {
             for (int j = 0; j < SIZE; ++j) {
                 if (board[j][i] == player) {
                     if (j >= 0 && j <= 4) {
+                        //X-XX
                         if ((board[j+1][i] == BLANK) && (board[j+2][i] == player) && (board[j+3][i] == player)) {
                             if (checkFirstEnd(false, board, j, i)) {
                                 openEnds++;
@@ -410,6 +441,7 @@ public class Game {
                             value += getValue(3, openEnds, player == currentTurn);
                             j += 3;
                             openEnds = 0;
+                        //XX-X    
                         } else if ((board[j+1][i] == player) && (board[j+2][i] == BLANK) && (board[j+3][i] == player)) {
                             if (checkFirstEnd(false, board, j, i)) {
                                 openEnds++;
@@ -428,6 +460,14 @@ public class Game {
         return value;
     }
     
+    /**
+     * Checks the first end.
+     * @param checkingRow true if it's checking rows; otherwise, false
+     * @param board the board
+     * @param row the row number
+     * @param col the col number
+     * @return true if it's open; otherwise, false 
+     */
     public boolean checkFirstEnd(boolean checkingRow, char[][] board, int row, int col) {
         if (checkingRow) {
             if (col == 0) {
@@ -452,6 +492,14 @@ public class Game {
         }
     }
     
+    /**
+     * Checks the second end.
+     * @param checkingRow true if it's checking rows; otherwise, false
+     * @param board the board
+     * @param row the row number
+     * @param col the col number
+     * @return true if it's open; otherwise, false 
+     */
     public boolean checkSecondEnd(boolean checkingRow, char[][] board, int row, int col) {
         if (checkingRow) {
             if (col >= 7) {
@@ -478,7 +526,7 @@ public class Game {
     
     /**
      * Returns the value of one of the cases. Based on whose turn is, it
-     * give bonus.
+     * returns a greater value.
      * @param consecutive the number of consecutive identical symbol
      * @param openEnds the number of open ends
      * @param currentTurn whose turn is it
@@ -537,14 +585,17 @@ public class Game {
      * @return 0 if draw; 1 is human won; 2 if computer won; -1 if it's not a terminal
      */
     public int terminate(char[][] board) {
-        if (blankSpaces(board) == 0 || checkGoal(HUMAN, board) || checkGoal(COMPUTER, board)) {
-            return 0;
-        } else if (checkGoal(HUMAN, board)){
-            return 1;
+        // Human won
+        if (checkGoal(HUMAN, board)){
+            return -200000000;
+        // Computer won
         } else if (checkGoal(COMPUTER, board)) {
-            return 2;
+            return 200000000;
+        // Draw
+        } else if (blankSpaces(board) == 0) {
+            return 1;
         } else {
-            return -1;
+            return 0;
         }
     }
     
@@ -564,19 +615,22 @@ public class Game {
                         if (board[i][j + 1] == player && 
                                 board[i][j + 2] == player && 
                                     board[i][j + 3] == player) {
+                            System.out.println("4 in a line");
                             foundGoal = true;
-                        }
-                        // 5 in a line or above is not a goal
-                        if (j + 4 < SIZE) {
-                            if (board[i][j + 4] == player) {
-                                foundGoal = false;
-                                j = j + 4;
+                            // 5 in a line or above is not a goal
+                            if (j + 4 < SIZE) {
+                                if (board[i][j + 4] == player) {
+                                    System.out.println("Row: " + i + " Col: " + j);
+                                    System.out.println("Went over 4 in a line");
+                                    foundGoal = false;
+                                    j = j + 4;
+                                }
                             }
                         }
                     }
                 }
                 if (foundGoal) {
-                    break;
+                    return foundGoal;
                 }
             }
         }      
@@ -589,18 +643,18 @@ public class Game {
                                 board[j + 2][i] == player && 
                                     board[j + 2][i] == player) {
                             foundGoal = true;
-                        }
-                        // 5 in a line or above is not a goal
-                        if (j + 4 < SIZE) {
-                            if (board[j + 4][i] == player) {
-                                foundGoal = false;
-                                j = j + 4;
+                            // 5 in a line or above is not a goal
+                            if (j + 4 < SIZE) {
+                                if (board[j + 4][i] == player) {
+                                    foundGoal = false;
+                                    j = j + 4;
+                                }
                             }
                         }
                     }
                 }
                 if (foundGoal) {
-                    break;
+                    return foundGoal;
                 }
             }
         }
