@@ -58,7 +58,7 @@ public class Game {
     public void makeMove() {
         // original location of start time
         int best = Integer.MIN_VALUE;
-        int score;
+        int score = 0;
         int bestRow = -1;
         int bestCol = -1;
 
@@ -75,6 +75,8 @@ public class Game {
 //                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, TIME_LIMIT);
                     //System.out.println("moveVal: " + score);
                     //System.out.println("bestVal: " + best);
+                    if(score == 200000000 || score == -2000000000 || score == 1)
+                        displayWinner(score);
                     if (score > best) {
                         bestRow = i;
                         bestCol = j;
@@ -85,11 +87,40 @@ public class Game {
                 }
             }
         }
+
         System.out.println("\nComputer move: " + ROWS[bestRow] + (bestCol + 1));
         System.out.println();
         board[bestRow][bestCol] = COMPUTER;
+
+
     }
-    
+
+    /**
+     * Displays who's the winner based on the score parameter
+     * @param score value from running the IDS w/AlphaBeta to determine winner/draw
+     */
+    public void displayWinner(int score) {
+        switch(score) {
+            case 200000000:
+                print();
+                System.out.println("Computer won!");
+                System.exit(1);
+                break;
+            case -2000000000:
+                print();
+                System.out.println("You won!");
+                System.exit(1);
+                break;
+            case 1:
+                print();
+                System.out.println("It's a TIE!");
+                System.exit(1);
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * Minimax algorithm with alpha-beta pruning.
      * @param board     the current board
@@ -188,7 +219,11 @@ public class Game {
 
             int searchResult =  minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, isMax, currentTime, endTime - currentTime);
 
-//            if(searchResult >= winCutoff)
+            if(searchResult == 0) {
+                score = searchResult;
+                break;
+            }
+
             if(!searchCutOff) {
                 score = searchResult;
             }
@@ -615,13 +650,13 @@ public class Game {
                         if (board[i][j + 1] == player && 
                                 board[i][j + 2] == player && 
                                     board[i][j + 3] == player) {
-                            System.out.println("4 in a line");
+//                            System.out.println("4 in a line");
                             foundGoal = true;
                             // 5 in a line or above is not a goal
                             if (j + 4 < SIZE) {
                                 if (board[i][j + 4] == player) {
-                                    System.out.println("Row: " + i + " Col: " + j);
-                                    System.out.println("Went over 4 in a line");
+//                                    System.out.println("Row: " + i + " Col: " + j);
+//                                    System.out.println("Went over 4 in a line");
                                     foundGoal = false;
                                     j = j + 4;
                                 }
