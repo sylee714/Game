@@ -11,7 +11,12 @@ public class Game {
     private final char HUMAN = 'O';
     private final char COMPUTER = 'X';
     private final char BLANK = '-';
-    private char turn;
+
+    private final int TIME_LIMIT = 5000; // time in milliseconds
+    private final int EVAL_PER_SEC = 100;
+    private final int winCutOff = 500000;
+    private boolean searchCutOff = false;
+
     private char[][] board;
     private char firstPlayer;
     private char secondPlayer; 
@@ -54,6 +59,7 @@ public class Game {
      * Computer makes the best move.
      */
     public void makeMove() {
+        long startTime = System.currentTimeMillis();
         int best = Integer.MIN_VALUE;
         int score;
         int bestRow = -1;
@@ -64,7 +70,8 @@ public class Game {
                 if (board[i][j] == BLANK) {
                     // Make a move
                     board[i][j] = COMPUTER;
-                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                    long searchTimeLimit = ((TIME_LIMIT - 1000) / (checkValidMoves()));
+                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, searchTimeLimit);
                     System.out.println("moveVal: " + score);
                     System.out.println("bestVal: " + best);
                     if (score > best) {
@@ -84,17 +91,25 @@ public class Game {
     
     /**
      * Minimax algorithm with alpha-beta pruning.
-     * @param board the current board
-     * @param depth the depth
-     * @param alpha the alpha
-     * @param beta the beta
-     * @param isMax to indicate which one to use minValue or maxValue
+     * @param board     the current board
+     * @param depth     the depth
+     * @param alpha     the alpha
+     * @param beta      the beta
+     * @param isMax     to indicate which one to use minValue or maxValue
+     * @param startTime starting time limit
+     * @param timeLimit set time limit
      * @return the best value
      */
-    public int minimax(char[][] board, int depth, int alpha, int beta, boolean isMax){
+    public int minimax(char[][] board, int depth, int alpha, int beta, boolean isMax, long startTime, long timeLimit){
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = (currentTime - startTime);
+
+        if(elapsedTime >= timeLimit)
+            searchCutOff = true;
+
         boolean stop = false;
         // Terminal state
-        if (depth == 0 || terminate(board)) {
+        if (searchCutOff || depth == 0 || terminate(board)) {
             char currentTurn = BLANK;
             if (isMax) {
                 currentTurn = secondPlayer;
@@ -113,7 +128,7 @@ public class Game {
                 for (int j = 0; j < SIZE; ++j) {
                     if (board[i][j] == BLANK) {
                         board[i][j] = secondPlayer;
-                        best = Math.max(best, minimax(board, depth - 1, alpha, beta, false));
+                        best = Math.max(best, minimax(board, depth - 1, alpha, beta, false, startTime, timeLimit));
                         board[i][j] = BLANK;
                         alpha = Math.max(alpha, best);
                         // Alpha-bata pruning
@@ -136,7 +151,7 @@ public class Game {
                 for (int j = 0; j < SIZE; ++j) {
                     if (board[i][j] == BLANK) {
                         board[i][j] = firstPlayer;
-                        best = Math.min(best, minimax(board, depth - 1, alpha, beta, true));
+                        best = Math.min(best, minimax(board, depth - 1, alpha, beta, true, startTime, timeLimit));
                         board[i][j] = BLANK;
                         beta = Math.min(beta, best);
                         // Alpha-bata pruning
@@ -154,7 +169,37 @@ public class Game {
             return best;
         } 
     }
-    
+
+//    public int iterativeDeepeningSearch(char[][] board, long timeLimit) {
+//        long startTime = System.currentTimeMillis();
+//        long endTime = startTime + timeLimit;
+//        int depth = 1;
+//        int score = 0;
+//        searchCutOff = false;
+//
+//        while(true) {
+//            long currentTime = System.currentTimeMillis();
+//
+//            if(currentTime >= endTime)
+//                break;
+//
+//            int searchResult =  minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, currentTime, endTime - currentTime);
+//        }
+//        return score;
+//    }
+
+    public int checkValidMoves() {
+        int validMoves = 0;
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if(board[i][j] == BLANK) {
+                    validMoves ++;
+                }
+            }
+        }
+        return validMoves;
+    }
+
     /**
      * Calculate the total vale of a board.
      * @param board the board

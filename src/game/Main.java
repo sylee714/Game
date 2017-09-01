@@ -19,26 +19,26 @@ public class Main {
                 state[i][j] = '-';
             }
         }
-        state[3][1] = 'O';
-        //state[3][2] = 'O';
-        state[3][3] = 'O';
-        //state[3][4] = 'X';
-        state[2][2] = 'X';
-        Game game = new Game('O');
-        game.print(state);
-        System.out.println(game.calculate(state, 'X'));
-        System.out.println(game.calculate(state, 'O'));
-        //state[2][1] = 'X';
-        game.print(state);
-        System.out.println(game.calculate(state, 'X'));
-        System.out.println(game.calculate(state, 'O'));
+//        state[3][1] = 'O';
+//        //state[3][2] = 'O';
+//        state[3][3] = 'O';
+//        //state[3][4] = 'X';
+//        state[2][2] = 'X';
+//        Game game = new Game('O');
+//        game.print(state);
+//        System.out.println(game.calculate(state, 'X'));
+//        System.out.println(game.calculate(state, 'O'));
+//        //state[2][1] = 'X';
+//        game.print(state);
+//        System.out.println(game.calculate(state, 'X'));
+//        System.out.println(game.calculate(state, 'O'));
         
         
-        /*
+
         char choice = pickFirst();
-        
         Game game = new Game(choice);
-        if (choice == 'y') { 
+
+        if (choice == 'O') {
             // loop to run test UI
             for(int i = 0; i < 15 ; i++) {
                 playerChoice(game);
@@ -46,6 +46,7 @@ public class Main {
                 game.print();
                 System.out.println("Computer's Turn...\n");
                 game.makeMove();
+                game.print();
             }
         } else {
             // loop to run test UI
@@ -58,7 +59,7 @@ public class Main {
                 game.print();
             }
         }
-        */
+
     }
 
     /**
