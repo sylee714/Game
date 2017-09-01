@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package game;
 
 import java.util.ArrayList;
@@ -24,51 +19,46 @@ public class Main {
                 state[i][j] = '-';
             }
         }
-
-
+        state[3][1] = 'O';
+        //state[3][2] = 'O';
+        state[3][3] = 'O';
+        //state[3][4] = 'X';
+        state[2][2] = 'X';
+        Game game = new Game('O');
+        game.print(state);
+        System.out.println(game.calculate(state, 'X'));
+        System.out.println(game.calculate(state, 'O'));
+        //state[2][1] = 'X';
+        game.print(state);
+        System.out.println(game.calculate(state, 'X'));
+        System.out.println(game.calculate(state, 'O'));
+        
+        
+        /*
         char choice = pickFirst();
         
         Game game = new Game(choice);
-        // loop to run test UI
-        for(int i = 0; i < 15 ; i++) {
-            game.print();
-            playerChoice(game);
-            System.out.println();
-            game.print();
-            System.out.println("Computer's Turn...\n");
-            game.makeMove();
+        if (choice == 'y') { 
+            // loop to run test UI
+            for(int i = 0; i < 15 ; i++) {
+                playerChoice(game);
+                System.out.println();
+                game.print();
+                System.out.println("Computer's Turn...\n");
+                game.makeMove();
+            }
+        } else {
+            // loop to run test UI
+            for(int i = 0; i < 15 ; i++) {
+                System.out.println("Computer's Turn...\n");
+                game.makeMove();
+                game.print();
+                playerChoice(game);
+                System.out.println();
+                game.print();
+            }
         }
-
-        //game.print(state);
-        //System.out.println(game.evaluate(state));
-//        game.getMove(3,3);
-//        game.print();
-//        game.makeMove();
-//        game.print();
-//        game.getMove(3,4);
-//        game.print();
-//        game.makeMove();
-//        game.print();
-        /*
-        state[6][4] = 'X';
-        game.print(state);
-        System.out.println(game.evaluate(state));
-        game.makeMove();
-        game.print();
-        game.getMove(7,6);
-        game.print();
-        game.makeMove();
-        game.print();
-        game.getMove(6,6);
-        game.print();
-        game.makeMove();
-        game.print();
-        game.getMove();
-        game.print();
         */
-        
-       
-        
     }
 
     /**
