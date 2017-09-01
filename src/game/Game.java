@@ -65,21 +65,19 @@ public class Game {
                 if (board[i][j] == BLANK) {
                     board[i][j] = COMPUTER;
                     if (firstPlayer == COMPUTER) {
-                        int moveVal = minimax(board, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+                        int moveVal = minimax(board, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+                        board[i][j] = BLANK;
                         if (moveVal > bestVal) {
                             bestRow = i;
                             bestCol = j;
-                            bestVal = moveVal;
                         }
-                        board[i][j] = BLANK;
                     } else {
                         int moveVal = minimax(board, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+                        board[i][j] = BLANK;
                         if (moveVal > bestVal) {
                             bestRow = i;
                             bestCol = j;
-                            bestVal = moveVal;
                         }
-                        board[i][j] = BLANK;
                     }
                 }
             }
@@ -102,16 +100,17 @@ public class Game {
                         state[i][j] = firstPlayer;
                         best = Math.max(best, minimax(state, depth - 1, alpha, beta, false));
                         state[i][j] = BLANK;
-                        alpha = Math.max(alpha, best);
-                        if (beta <= alpha) {
-                           stop = true;
-                           break;
-                        }
+                        //alpha = Math.max(alpha, best);
+                        //if (beta <= alpha) {
+                            //System.out.println("Max pruned");
+                           // stop = true;
+                           // break;
+                        //}
                     }
                 }
-                if (stop) {
-                    break;
-                }
+                //if (stop) {
+                  //  break;
+                //}
             }
             return best;
         } else {
@@ -122,16 +121,17 @@ public class Game {
                         state[i][j] = secondPlayer;
                         best = Math.min(best, minimax(state, depth - 1, alpha, beta, true));
                         state[i][j] = BLANK;
-                        beta = Math.min(beta, best);
-                        if (beta <= alpha) {
-                            stop = true;
-                            break;
-                        }
+                        //beta = Math.min(beta, best);
+                        //if (beta <= alpha) {
+                            //System.out.println("Min pruned");
+                            //stop = true;
+                            //break;
+                        //}
                     }
                 }
-                if (stop) {
-                    break;
-                }
+                //if (stop) {
+                  //  break;
+                //}
             }
             return best;
         } 
