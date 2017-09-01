@@ -37,7 +37,6 @@ public class Main {
             game.print();
             System.out.println("Computer's Turn...\n");
             game.makeMove();
-            game.print();
         }
 
         //game.print(state);
