@@ -83,7 +83,7 @@ public class Game {
                 }
             }
         }
-        System.out.println("Computer move: " + ROWS[bestRow] + (bestCol + 1));
+        System.out.println("\nComputer move: " + ROWS[bestRow] + (bestCol + 1));
         System.out.println();
         board[bestRow][bestCol] = COMPUTER;
     }
@@ -157,7 +157,7 @@ public class Game {
                         }
                     }
                 }
-                // Alpha-bata pruning
+                // Alpha-beta pruning
                 if (stop) {
                     break;
                 }

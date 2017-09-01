@@ -11,7 +11,7 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         
         char[][] state = new char[8][8];
         for (int i = 0; i < 8; ++i) {
@@ -37,16 +37,24 @@ public class Main {
 
         char choice = pickFirst();
         Game game = new Game(choice);
-
+        game.print();
         if (choice == 'O') {
             // loop to run test UI
             for(int i = 0; i < 15 ; i++) {
+                double time = (double) System.currentTimeMillis();
                 playerChoice(game);
                 System.out.println();
                 game.print();
                 System.out.println("Computer's Turn...\n");
+
+//                Thread.sleep(5000); // simulate computer thinking...
+
+                long tStart = System.currentTimeMillis();
                 game.makeMove();
+                long tEnd = System.currentTimeMillis();
+                long tDelta = tEnd - tStart;
                 game.print();
+                System.out.printf("Computer took: %d milliseconds", tDelta + '\n');
             }
         } else {
             // loop to run test UI
@@ -98,15 +106,15 @@ public class Main {
 
         boolean correctIn = false;
         while(!correctIn) {
-            System.out.print("Choose your next move: ");
+            System.out.print("\nChoose your next move: ");
             choice = scan.next();
             if(choice.length() != 2) {
-                System.out.println("Wrong input length!");
+                System.out.println("\nWrong input length!");
             } else {
                 if(Character.isAlphabetic(choice.charAt(0)) && Character.isDigit(choice.charAt(1)))
                     correctIn = true;
                 else
-                    System.out.println("Invalid point value!");
+                    System.out.println("\nInvalid point value!");
             }
         }
         if((int)choice.charAt(0) < 97) {
