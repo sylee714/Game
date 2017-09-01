@@ -68,14 +68,23 @@ public class Main {
      */
     public static char pickFirst() {
         Scanner scan = new Scanner(System.in);
+        char option = 'O';
         String whosTurn;
-        System.out.print("Would you like to go first? (y/n): ");
-        whosTurn = scan.next().toLowerCase();
-        if(whosTurn.equals("y")) {
-            return 'O';
-        } else {
-            return 'X';
+        boolean correctIn = false;
+        while(!correctIn) {
+            System.out.print("Would you like to go first? (y/n): ");
+            whosTurn = scan.next().toLowerCase();
+            if(whosTurn.equals("y")) {
+                option = 'O';
+                correctIn = true;
+            } else if(whosTurn.equals("n")){
+                option = 'X';
+                correctIn = true;
+            } else {
+                System.out.println("Invalid input!\n");
+            }
         }
+        return option;
     }
 
     /**
@@ -84,10 +93,22 @@ public class Main {
      */
     public static void playerChoice(Game game) {
         Scanner scan = new Scanner(System.in);
-        String choice;
+        String choice = "";
 //        String move;
-        System.out.print("Choose your next move: ");
-        choice = scan.next();
+
+        boolean correctIn = false;
+        while(!correctIn) {
+            System.out.print("Choose your next move: ");
+            choice = scan.next();
+            if(choice.length() != 2) {
+                System.out.println("Wrong input length!");
+            } else {
+                if(Character.isAlphabetic(choice.charAt(0)) && Character.isDigit(choice.charAt(1)))
+                    correctIn = true;
+                else
+                    System.out.println("Invalid point value!");
+            }
+        }
         int row = (int)choice.charAt(0) - 97; // accounts for lower case ASCII value
         int col = (int)choice.charAt(1) - 49; // accounts for pos int ASCII value
         game.getMove(row, col);
