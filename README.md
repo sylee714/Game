@@ -1,7 +1,11 @@
 # CS420 Project 3
-###Collaborators: 
-Seungyun Lee, Dylan Nguyen
+###Collaborators: Seungyun Lee, Dylan Nguyen
 
-To run:
--------
-Use Eclipse IDE with project folder
+###To compile:
+```
+javac Main.java
+```
+###To run:
+```
+java Main
+```
