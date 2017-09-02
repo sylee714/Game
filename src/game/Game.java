@@ -1,7 +1,5 @@
 package game;
 
-import java.util.Random;
-
 /**
  *  This class represents a Game. It implements minimax algorithm with 
  *  alpha-beta pruning to find the best move against the opponent.
@@ -62,18 +60,16 @@ public class Game {
         int score = 0;
         int bestRow = -1;
         int bestCol = -1;
+        int moves = checkValidMoves();
         // Go through every possible move.
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
                 if (board[i][j] == BLANK) {
                     // Make a move
                     board[i][j] = COMPUTER;
-                    long searchTimeLimit = ((TIME_LIMIT - 1000)/checkValidMoves());
+                    long searchTimeLimit = ((TIME_LIMIT - 1000)/moves);
                     score = iterativeDeepeningSearch(board, false, searchTimeLimit);
-//                    long startTime = System.currentTimeMillis();
-//                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, TIME_LIMIT);
-                    //System.out.println("moveVal: " + score);
-                    //System.out.println("bestVal: " + best);
+
                     if (score > best) {
                         bestRow = i;
                         bestCol = j;
@@ -98,17 +94,17 @@ public class Game {
         switch(score) {
             case 200000000:
                 print();
-                System.out.println("Computer won!");
+                System.out.println("Computer wins!\nGAME OVER");
                 System.exit(1);
                 break;
             case -200000000:
                 print();
-                System.out.println("You won!");
+                System.out.println("You won!\nGAME OVER");
                 System.exit(1);
                 break;
             case 1:
                 print();
-                System.out.println("It's a TIE!");
+                System.out.println("It's a TIE!\nGAME OVER");
                 System.exit(1);
                 break;
             default:
@@ -137,12 +133,9 @@ public class Game {
         boolean stop = false;
         int whoWon = terminate(board);
         if (whoWon != 0) {
-//            print(board);
-//            System.out.println("Score: " + whoWon);
             return whoWon;
         }
         // Terminal state
-        // searchCutOff ||
         if (searchCutOff || depth == 0) {
             char currentTurn = BLANK;
             if (isMax) {
@@ -163,14 +156,14 @@ public class Game {
                                 startTime, timeLimit));
                         board[i][j] = BLANK;
                         alpha = Math.max(alpha, best);
-                        // Alpha-bata pruning
+                        // Alpha-beta pruning
                         if (beta <= alpha) {
                            stop = true;
                            break;
                         }
                     }
                 }
-                // Alpha-bata pruning
+                // Alpha-beta pruning
                 if (stop) {
                     break;
                 }
@@ -749,7 +742,7 @@ public class Game {
      * Prints the board.
      */
     public void print() {
-        System.out.println("  1 2 3 4 5 6 7 8");
+        System.out.println("\n  1 2 3 4 5 6 7 8");
         for (int i = 0; i < SIZE; ++i) {
             System.out.print(ROWS[i] + " ");
             for (int j = 0; j < SIZE; ++j) {
