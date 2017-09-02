@@ -9,8 +9,6 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException {
 
-        Scanner scan = new Scanner(System.in);
-
         char[][] state = new char[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
@@ -21,8 +19,8 @@ public class Main {
         char choice = pickFirst();
         Game game = new Game(choice);
 
-        System.out.print("\nHow long should the computer think about its moves (in seconds)? :");
-        int timeLimit = scan.nextInt(); // 5-30 sec
+        int timeLimit =  chooseTime();// 5-30 sec
+
         game.setTime(timeLimit);
 
         game.print();
@@ -117,4 +115,21 @@ public class Main {
         game.getMove(row, col);
     }
 
+    /**
+     * Prompts user to input time for computer to "think"
+     * @return the time limit in seconds
+     */
+    public static int chooseTime() {
+        boolean inRange = false;
+        Scanner scan = new Scanner(System.in);
+        int timeLimit = 5;
+        while(!inRange) {
+            System.out.print("\nHow long should the computer think about its moves (in seconds)? :");
+            timeLimit = scan.nextInt(); // 5-30 sec
+            if(timeLimit >= 5 && timeLimit <= 30)
+                inRange = true;
+            System.out.println("\nPlease choose a time from 5-30 seconds!");
+        }
+        return timeLimit;
+    }
 }

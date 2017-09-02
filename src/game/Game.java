@@ -159,7 +159,8 @@ public class Game {
                 for (int j = 0; j < SIZE; ++j) {
                     if (board[i][j] == BLANK) {
                         board[i][j] = secondPlayer;
-                        best = Math.max(best, minimax(board, depth - 1, alpha, beta, false, startTime, timeLimit));
+                        best = Math.max(best, minimax(board, depth - 1, alpha, beta, false,
+                                startTime, timeLimit));
                         board[i][j] = BLANK;
                         alpha = Math.max(alpha, best);
                         // Alpha-bata pruning
@@ -182,7 +183,8 @@ public class Game {
                 for (int j = 0; j < SIZE; ++j) {
                     if (board[i][j] == BLANK) {
                         board[i][j] = firstPlayer;
-                        best = Math.min(best, minimax(board, depth - 1, alpha, beta, true, startTime, timeLimit));
+                        best = Math.min(best, minimax(board, depth - 1, alpha, beta, true,
+                                startTime, timeLimit));
                         board[i][j] = BLANK;
                         beta = Math.min(beta, best);
                         // Alpha-bata pruning
@@ -201,6 +203,13 @@ public class Game {
         } 
     }
 
+    /**
+     * Iterative deepening search
+     * @param board state of the game
+     * @param isMax boolean to check if player is MAX vs MIN
+     * @param timeLimit time limit for total search
+     * @return
+     */
     public int iterativeDeepeningSearch(char[][] board,boolean isMax, long timeLimit) {
         long startTime = System.currentTimeMillis();
         long endTime = startTime + timeLimit;
@@ -214,13 +223,12 @@ public class Game {
             if(currentTime >= endTime)
                 break;
 
-            int searchResult =  minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, isMax, currentTime, endTime - currentTime);
-
+            int searchResult =  minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, isMax,
+                    currentTime, endTime - currentTime);
             if(searchResult == 0) {
                 score = searchResult;
                 break;
             }
-
             if(!searchCutOff) {
                 score = searchResult;
             }
