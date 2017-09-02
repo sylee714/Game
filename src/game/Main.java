@@ -9,13 +9,6 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        char[][] state = new char[8][8];
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
-                state[i][j] = '-';
-            }
-        }
-
         char choice = pickFirst();
         Game game = new Game(choice);
         int timeLimit =  chooseTime();// 5-30 sec
