@@ -1,5 +1,3 @@
-package game;
-
 /**
  *  This class represents a Game. It implements minimax algorithm with 
  *  alpha-beta pruning to find the best move against the opponent.
