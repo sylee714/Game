@@ -1,18 +1,16 @@
 package game;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- *
- */
 public class Main {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException {
-        
+
+        Scanner scan = new Scanner(System.in);
+
         char[][] state = new char[8][8];
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
@@ -22,35 +20,40 @@ public class Main {
 
         char choice = pickFirst();
         Game game = new Game(choice);
+
+        System.out.print("\nHow long should the computer think about its moves (in seconds)? :");
+        int timeLimit = scan.nextInt(); // 5-30 sec
+        game.setTime(timeLimit);
+
         game.print();
         if (choice == 'O') {
             // loop to run test UI
-            for(int i = 0; i < 15 ; i++) {
+            while(true) {
                 double time = (double) System.currentTimeMillis();
                 playerChoice(game);
                 System.out.println();
                 game.print();
                 System.out.println("Computer's Turn...\n");
 
-                long tStart = System.currentTimeMillis();
+//                long tStart = System.currentTimeMillis();
                 game.makeMove();
-                long tEnd = System.currentTimeMillis();
-                long tDelta = tEnd - tStart;
-                double tElapsed = (double) tDelta / 1000.0;
+//                long tEnd = System.currentTimeMillis();
+//                long tDelta = tEnd - tStart;
+//                double tElapsed = (double) tDelta / 1000.0;
                 game.print();
-                System.out.printf("Computer took: %.2f seconds", tElapsed + '\n');
+//                System.out.printf("Computer took: %.2f seconds", tElapsed + '\n');
             }
         } else {
             // loop to run test UI
-            for(int i = 0; i < 15 ; i++) {
+            while(true) {
                 System.out.println("Computer's Turn...\n");
                 long tStart = System.currentTimeMillis();
                 game.makeMove();
-                long tEnd = System.currentTimeMillis();
-                long tDelta = tEnd - tStart;
-                double tElapsed = (double) tDelta / 1000.0;
+//                long tEnd = System.currentTimeMillis();
+//                long tDelta = tEnd - tStart;
+//                double tElapsed = (double) tDelta / 1000.0;
                 game.print();
-                System.out.printf("Computer took: %.2f seconds", tElapsed + '\n');
+//                System.out.printf("Computer took: %.2f seconds", tElapsed + '\n');
                 playerChoice(game);
                 System.out.println();
                 game.print();
@@ -113,4 +116,5 @@ public class Main {
         col = (int)choice.charAt(1) - 49; // accounts for pos int ASCII value
         game.getMove(row, col);
     }
+
 }

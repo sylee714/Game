@@ -12,7 +12,7 @@ public class Game {
     private final char COMPUTER = 'X';
     private final char BLANK = '-';
 
-    private final int TIME_LIMIT = 5000; // time in milliseconds
+    private int TIME_LIMIT = 5000; // time in milliseconds
     private boolean searchCutOff = false;
 
     private char[][] board;
@@ -35,7 +35,7 @@ public class Game {
             }
         }
     }
-
+    
     /**
      * Get user's move. Check if it's a valid move.
      * @param row the row number
@@ -45,6 +45,7 @@ public class Game {
     public boolean getMove(int row, int col) {
         if (board[row][col] == BLANK) {
             board[row][col] = HUMAN;
+            displayWinner(terminate(board));
             return true;
         } else {
             System.out.println("It's already occupied.");
@@ -61,8 +62,6 @@ public class Game {
         int score = 0;
         int bestRow = -1;
         int bestCol = -1;
-
-
         // Go through every possible move.
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
@@ -75,8 +74,6 @@ public class Game {
 //                    score = minimax(board, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, startTime, TIME_LIMIT);
                     //System.out.println("moveVal: " + score);
                     //System.out.println("bestVal: " + best);
-                    if(score == 200000000 || score == -2000000000 || score == 1)
-                        displayWinner(score);
                     if (score > best) {
                         bestRow = i;
                         bestCol = j;
@@ -87,12 +84,10 @@ public class Game {
                 }
             }
         }
-
         System.out.println("\nComputer move: " + ROWS[bestRow] + (bestCol + 1));
         System.out.println();
         board[bestRow][bestCol] = COMPUTER;
-
-
+        displayWinner(terminate(board));
     }
 
     /**
@@ -106,7 +101,7 @@ public class Game {
                 System.out.println("Computer won!");
                 System.exit(1);
                 break;
-            case -2000000000:
+            case -200000000:
                 print();
                 System.out.println("You won!");
                 System.exit(1);
@@ -142,6 +137,8 @@ public class Game {
         boolean stop = false;
         int whoWon = terminate(board);
         if (whoWon != 0) {
+//            print(board);
+//            System.out.println("Score: " + whoWon);
             return whoWon;
         }
         // Terminal state
@@ -252,17 +249,43 @@ public class Game {
     public int calculate(char[][] board, char currentTurn) {
         int computerValue = checkRows(board, COMPUTER, currentTurn) + 
                             checkCols(board, COMPUTER, currentTurn) +
-                            checkDisjointTwoRows(board, COMPUTER, currentTurn) + 
-                            checkDisjointTwoCols(board, COMPUTER, currentTurn) +
-                            checkDisjointThreeRows(board, COMPUTER, currentTurn) + 
-                            checkDisjointThreeCols(board, COMPUTER, currentTurn);
+                            checkDisjointRows(board, COMPUTER, currentTurn) +
+                            checkDisjointCols(board, COMPUTER, currentTurn);
         int humanValue = checkRows(board, HUMAN, currentTurn) + 
                             checkCols(board, HUMAN, currentTurn) +
-                            checkDisjointTwoRows(board, HUMAN, currentTurn) + 
-                            checkDisjointTwoCols(board, HUMAN, currentTurn) +
-                            checkDisjointThreeRows(board, HUMAN, currentTurn) + 
-                            checkDisjointThreeCols(board, HUMAN, currentTurn);;
+                            checkDisjointRows(board, HUMAN, currentTurn) +
+                            checkDisjointCols(board, HUMAN, currentTurn);;;
         return computerValue - humanValue;
+    }
+    
+    /**
+     * Check rows if there is any disjoint 2 in a line or 3 in a line.
+     * @param board the board
+     * @param player the player
+     * @param currentTurn whose turn is it
+     * @return the value
+     */
+    public int checkDisjointRows(char[][] board, char player, char currentTurn) {
+        int value = checkDisjointThreeRows(board, player, currentTurn);
+        if (value == 0) {
+            value = checkDisjointTwoRows(board, player, currentTurn);
+        }
+        return value;
+    }
+    
+    /**
+     * Check cols if there is any disjoint 2 in a line or 3 in a line.
+     * @param board the board
+     * @param player the player
+     * @param currentTurn whose turn is it
+     * @return the value
+     */
+    public int checkDisjointCols(char[][] board, char player, char currentTurn) {
+        int value = checkDisjointThreeCols(board, player, currentTurn);
+        if (value == 0) {
+            value = checkDisjointTwoCols(board, player, currentTurn);
+        }
+        return value;
     }
     
     /**
@@ -676,7 +699,7 @@ public class Game {
                     if (j + 3 < SIZE) {
                         if (board[j + 1][i] == player && 
                                 board[j + 2][i] == player && 
-                                    board[j + 2][i] == player) {
+                                    board[j + 3][i] == player) {
                             foundGoal = true;
                             // 5 in a line or above is not a goal
                             if (j + 4 < SIZE) {
@@ -743,5 +766,8 @@ public class Game {
             System.out.println();
         }
         System.out.println();
+    }
+    public void setTime(int time) {
+        TIME_LIMIT = time * 1000;
     }
 }
